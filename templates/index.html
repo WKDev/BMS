@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Camera Streaming</title>
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/black-dashboard.css')}}"> -->
+    <title>Button Example</title>
+    <style>
+        .button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+    </style>
+    <script src="{{ url_for('static', filename='jquery.min.js')}}"></script>
+    <script>
+        $(document).ready(function () {
+            $("#visual-mode").click(function () {
+                $.post("/change_cam_mode", { mode: "VIS" });
+            });
+            $("#MSX-mode").click(function () {
+                $.post("/change_cam_mode", { mode: "MSX" });
+            });
+            $("#IR-mode").click(function () {
+                $.post("/change_cam_mode", { mode: "IR" });
+            });
+            $("#FLIR").click(function () {
+                $.post("/change_cam_mode", { cam_mode: "FLIR" });
+            });
+            $("#IR").click(function () {
+                $.post("/change_cam_mode", { cam_mode: "IR" });
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <h1>Camera Streaming</h1>
+    <!-- 카메라 데이터를 출력할 이미지 요소를 생성합니다. -->
+    <!-- <img id="camera-img" src="/camera" width="640" height="480" /> -->
+    <img src="{{ url_for('camera_stream') }}" width="640" height="480" />
+    <script>
+        $(document).ready(function () {
+            // "FLIR" 버튼 클릭 이벤트 처리
+            $("#FLIR").click(function () {
+                location.reload();
+            });
+
+            // "IR" 버튼 클릭 이벤트 처리
+            $("#IR").click(function () {
+                location.reload();
+            });
+        });
+    </script>
+    <!-- <script>
+        // 이미지 요소를 가져옵니다.
+        var cameraImg = document.getElementById('camera-img');
+        // SSE 이벤트 소스를 생성합니다.
+        var eventSource = new EventSource('/camera');
+
+        // SSE 이벤트 핸들러를 등록합니다.
+        eventSource.onmessage = function (event) {
+            // 이벤트 데이터를 이미지 요소의 src 속성에 설정합니다.
+            cameraImg.src = URL.createObjectURL(event.data);
+        };
+    </script> -->
+
+    <div id="current-time-container">
+        Current Time: <span id="current-time"></span>
+    </div>
+    <script type="text/javascript">
+        function updateTime() {
+            var now = new Date();
+            var element = document.getElementById('current-time');
+            element.innerHTML = now.toLocaleString();
+        }
+        setInterval(updateTime, 1000);
+    </script>
+    <h2>Change Visual Device</h2>
+    <button class="button" id="FLIR">FLIR</button>
+    <button class="button" id="IR">CAM</button>
+
+    <h2>FLIR Cam Mode</h2>
+    <button class="button" id="visual-mode">Visual mode</button>
+    <button class="button" id="MSX-mode">MSX mode</button>
+    <button class="button" id="IR-mode">IR mode</button>
+
+
+
+    <h1>Temperature</h1>
+    <script>
+        $(document).ready(function () {
+            setInterval(function () {
+                $.get('/update', function (data) {
+                    $('#temperature1').text(data.temperature1);
+                    $('#temperature2').text(data.temperature2);
+                });
+            }, 1000);
+        });
+    </script>
+    <table>
+        <tr>
+            <th>Temperature 1 [°C]</th>
+            <th>Temperature 2 [°C]</th>
+        </tr>
+        <tr>
+            <td id="temperature1">{{ temperature1 }}</td>
+            <td id="temperature2">{{ temperature2 }}</td>
+        </tr>
+    </table>
+
+    <h1>Table List</h1>
+    <form method="POST">
+        <input type="text" name="date" placeholder="Date">
+        <input type="text" name="sleeptime" placeholder="SleepTime">
+        <button type="submit">Add Table</button>
+    </form>
+    <ul>
+        <li>Date | SleepTime</li>
+        {% for table in tables %}
+        <li>{{ table.date }} - {{ table.sleeptime }}</li>
+        {% endfor %}
+    </ul>
+</body>
+
+</html>
