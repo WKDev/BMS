@@ -62,3 +62,19 @@ class Flir:
         for i in range(1,7):
             ret.append(self.getBox(i))
         return ret
+
+    def getMaxTemp(self):
+        #NOTE. DO NOT CHANGE BOX NUMBER IN ADMIN PAGE!
+        #      If Max temperature is represented weird, SET THE BOX RANGE ClOSE TO BABY
+        resource = self.getResource('.image.sysimg.measureFuncs.mbox.'+'1'+'.'+'maxT').decode('utf8')
+        # print(f"[{self.__class__.__name__}] type : {type(resource)}")
+        # print(f"[{self.__class__.__name__}] len  : {len(resource)}")
+        # print(f"[{self.__class__.__name__}] len  : {list(resource)}")
+        if resource != None:
+            if isinstance(resource, str):
+                if len(resource) > 8: # -> "35.002C"
+                    return resource[1:7]
+            else:
+                return ""
+        else:
+            return ""

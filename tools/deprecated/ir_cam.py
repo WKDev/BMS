@@ -1,10 +1,16 @@
 import cv2
 
+CAM_PATH = '/dev/v4l/by-id/usb-ID002_ID002_V20201203002-video-index0'
+
 class IRCam:
     def __init__(self) -> None:
-        self.cap = cv2.VideoCapture(0)
+        self.cap = cv2.VideoCapture(CAM_PATH)
         self.this_name = self.__class__.__name__
         print(f"[{self.this_name}] Initialized")
+
+
+    def __del__(self) -> None:
+        self.cap.release()
 
     def proc(self) -> None:
         assert self.cap.isOpened(), \

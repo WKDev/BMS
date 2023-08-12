@@ -152,6 +152,7 @@
                             </div>
                             <button id="confirmButton" class="btn btn-primary">Confirm</button>
                         </div>
+
                         <script>
                             var modeToggle = document.getElementById("toggle-one");
                             var manualMode = document.getElementById("manualMode");
@@ -171,13 +172,7 @@
                                 } else {
                                     console.log('unchecked')
                                     document.getElementById("autoMode").style.display = "block"
-                                    var xhr = new XMLHttpRequest();
-                                    xhr.open("POST", "/update_heater");
-                                    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-                                    xhr.send(JSON.stringify({
-                                        mode: "off",
-                                        temperature: 0.0
-                                    }));
+
                                     manualMode.style.display = "none"; // 자동 모드일 때 슬라이더를 숨김
                                 }
                             });
@@ -188,7 +183,7 @@
                             });
 
                             // 확인 버튼을 클릭하면 실행되는 함수
-                            confirmButton.addEventListener("'unchecked'", function () {
+                            confirmButton.addEventListener("click", function () {
                                 console.log("confirm button clicked");
                             });
                             confirmButton.addEventListener("click", function () {
@@ -403,13 +398,9 @@
         </script>
         <script>
             $(document).ready(function () {
-
-                // 현재 상태만 보내줌
                 setInterval(function () {
                     $.get('/update_heater', function (data) {
                         $('#heater').text(data.heater);
-                        // no problem 230508
-                        console.log("Automode data", data.heater)
                         var heaterValue = document.getElementById("heater").innerHTML;
 
                         if (heaterValue === "ON") {
@@ -418,7 +409,7 @@
                             document.getElementById("heater").style.color = "black";
                         }
                     });
-                }, 500);
+                }, 3000);
             });
 
         </script>
@@ -451,7 +442,7 @@
                     $('#temperature1').text(data.temperature1);
                     $('#temperature2').text(data.temperature2);
                 });
-            }, 300);
+            }, 1000);
         });
     </script>
     <script>
@@ -460,7 +451,7 @@
                 $.get('/update_pt', function (data) {
                     $('#temperature3').text(data.temperature3);
                 });
-            }, 300);
+            }, 1000);
         });
     </script>
     <script>
@@ -469,7 +460,7 @@
                 $.get('/update_baby_temp', function (data) {
                     $('#baby_temperature').text(data.baby_temperature);
                 });
-            }, 300);
+            }, 1000);
         });
     </script>
 

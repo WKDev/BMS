@@ -9,6 +9,9 @@ import inspect
 
 from tools.db import Table
 
+CAM_PATH = '/dev/v4l/by-id/usb-ID002_ID002_V20201203002-video-index0'
+
+
 def calculate_EAR(eye): # 눈 거리 계산
     A = distance.euclidean(eye[1], eye[5])
     B = distance.euclidean(eye[2], eye[4])
@@ -37,13 +40,14 @@ class BlinkDetectorDlib:
         self.vc_init()
 
     def vc_init(self):
-        self.cap = cv2.VideoCapture(0)
+        self.cap = cv2.VideoCapture(CAM_PATH)
         self.cap.set(3, 640)
         self.cap.set(4, 480)
+
         print(f"[{self.__class__.__name__}] vc_init")
 
         self.hog_face_detector = dlib.get_frontal_face_detector()
-        dat_file = os.path.abspath("tools/dlib_parameters/shape_predictor_68_face_landmarks.dat")
+        dat_file = os.path.abspath("/home/motion/Desktop/flir/tools/dlib_parameters/shape_predictor_68_face_landmarks.dat")
         self.dlib_facelandmark = dlib.shape_predictor(dat_file)
         print(f"[{self.__class__.__name__}] vc_init |-> predictor init")
 
